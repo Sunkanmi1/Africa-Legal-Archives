@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { FormEvent, useState } from "react";
+import africaLegalArchiveLogo from "@/assets/africa-legal-archive-logo.png";
 
 const links = [
   { label: "Home", to: "/" },
@@ -20,12 +21,11 @@ export function TopNav({ searchPlaceholder = "Search statutes..." }: { searchPla
     <header className="sticky top-0 z-40 border-b border-border bg-primary text-primary-foreground">
       <div className="mx-auto flex h-[71px] max-w-[1280px] items-center gap-6 px-5">
         <Link to="/" className="flex shrink-0 items-center gap-2">
-          <span
-            aria-hidden
-            className="grid size-8 place-items-center rounded-md bg-gold-soft font-serif text-sm font-bold text-primary"
-          >
-            W
-          </span>
+          <img
+            src={africaLegalArchiveLogo}
+            alt="Africa Legal Archive logo"
+            className="size-10 rounded-full object-cover"
+          />
           <span className="font-serif text-lg font-bold tracking-tight">Africa Legal Archive</span>
         </Link>
 
