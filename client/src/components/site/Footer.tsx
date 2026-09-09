@@ -1,4 +1,6 @@
-import africaLegalArchiveLogo from "@/assets/africa-legal-archive-logo.png";
+import africaLegalArchiveLogo from "@/assets/panla.png";
+import Goif_Logo from "@/assets/Goif Logo.png";
+import { Link } from "@tanstack/react-router";
 
 export function Footer() {
   return (
@@ -11,7 +13,7 @@ export function Footer() {
               alt="Africa Legal Archive logo"
               className="size-10 rounded-full object-cover"
             />
-            <span className="font-serif text-lg font-bold">Africa Legal Archive</span>
+            <span className="font-serif text-lg font-bold">PALA</span>
           </div>
 
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-primary-foreground/70">
@@ -41,7 +43,14 @@ export function Footer() {
         </div>
 
         <div>
+          <Link to="https://globalopeninitiative.org/">
+           <img
+              src={Goif_Logo}
+              alt="GLOBAL OPEN INITIATIVE FOUNDATION logo"
+              className="h-15 w-30"
+            />
           <p className="eyebrow text-sm text-primary-foreground/70">project by GLOBAL OPEN INNITIATIVE FOUNDATION</p>
+          </Link>
         </div>
       </div>
     </footer>

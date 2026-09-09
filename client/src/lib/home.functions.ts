@@ -50,6 +50,7 @@ export interface SearchCase {
   court: string;
   judges: { name: string }[];
   country?: string;
+  court_level?: "supreme" | "high";
 }
 
 export interface SearchResponse {
@@ -68,6 +69,7 @@ export interface SearchFilters {
   judge?: string;
   court?: string;
   citation?: string;
+  court_level?: "supreme" | "high";
   has_full_text?: boolean;
   data_complete?: boolean;
 }
@@ -82,7 +84,7 @@ interface MediaResponse {
   }[];
 }
 
-const commonsFallbackCategory = "Category:1st GOIF-Effutu workshop 2023";
+const commonsFallbackCategory = "Category:Supreme Court of Ghana building";
 
 function caseImageIndex(caseId: string, imageCount: number) {
   const hash = Array.from(caseId).reduce((value, character) => value + character.charCodeAt(0), 0);
@@ -107,7 +109,7 @@ interface BackendCase {
 const fallbackCaseOfTheDay: CaseOfTheDay = {
   caseId: "",
   title: "Ghana case unavailable",
-  summary: "The daily Ghana Supreme Court case is temporarily unavailable.",
+  summary: "The daily Ghana court case is temporarily unavailable.",
   image: "",
   imageAlt: "",
   caseUrl: "/search",
@@ -126,7 +128,7 @@ const fallbackTrending: TrendingCase[] = [
     year: "",
     title: "No trending cases available",
     blurb: "Ghana case data is temporarily unavailable.",
-    court: "Supreme Court of Ghana",
+    court: "Ghana courts",
     caseId: "",
   },
 ];
@@ -150,7 +152,7 @@ export const getCaseOfTheDay = createServerFn({ method: "GET" }).handler(async (
   const data = await fetchBackend<BackendCase>("/api/case-of-the-day?country=ghana");
   if (!data) return fallbackCaseOfTheDay;
   const matchingMedia = await fetchBackend<MediaResponse>(
-    `/api/media?query=${encodeURIComponent(data.title)}&limit=1`,
+    `/api/media?query=${encodeURIComponent(data.title)}&limit=10`,
   );
   const media = matchingMedia?.items.length
     ? matchingMedia
@@ -176,8 +178,8 @@ export const getCaseOfTheDay = createServerFn({ method: "GET" }).handler(async (
 });
 
 export const getTrendingCases = createServerFn({ method: "GET" }).handler(async (): Promise<TrendingCase[]> => {
-  const response = await fetchBackend<SearchResponse>("/api/search?country=ghana&page=1&page_size=4");
-  const cases = (response?.results ?? []).map((item) => ({
+  const response = await fetchBackend<BackendCase[]>("/api/trending?country=ghana&limit=4");
+  const cases = (response ?? []).map((item) => ({
     country: item.country ?? "Ghana",
     year: item.date.slice(0, 4),
     title: item.title,
@@ -189,7 +191,7 @@ export const getTrendingCases = createServerFn({ method: "GET" }).handler(async 
 });
 
 export const getMediaLibrary = createServerFn({ method: "GET" }).handler(async (): Promise<MediaItem[]> => {
-  const data = await fetchBackend<MediaResponse>("/api/media?category=Category%3A1st%20GOIF-Effutu%20workshop%202023&limit=3");
+  const data = await fetchBackend<MediaResponse>("/api/media?category=Category%3ASupreme%20Court%20of%20Ghana%20building&limit=3");
   const items = data?.items?.map((item) => ({
     title: item.title,
     src: item.thumbnail_url,
@@ -213,7 +215,7 @@ export const getAllMedia = createServerFn({ method: "GET" }).handler(async (): P
 });
 
 export const getJudges = createServerFn({ method: "GET" }).handler(async (): Promise<JudgeProfile[]> => {
-  const data = await fetchBackend<JudgeProfile[]>("/api/judges?limit=30");
+  const data = await fetchBackend<JudgeProfile[]>("/api/judges?limit=100");
   return data ?? [];
 });
 

@@ -7,6 +7,8 @@ from services.reliability import get_cached, set_cached, with_retries
 
 logger = logging.getLogger(__name__)
 
+JUDGES_CATEGORY = "Category:Justices of the Supreme Court of Ghana"
+
 
 class CommonsService:
     """Service to enrich case data with information from Wikimedia Commons."""
@@ -14,7 +16,7 @@ class CommonsService:
     def __init__(self):
         self.api_endpoint = settings.COMMONS_API_ENDPOINT
         self.timeout = settings.COMMONS_TIMEOUT
-        self.category = "Category:1st GOIF-Effutu workshop 2023"
+        self.category = "Category:Supreme Court of Ghana building"
         self.headers = {"User-Agent": "WikiLegalAfrica/1.0 (https://github.com/WikiLegalAfrica)"}
 
     async def search_media(self, query: str, limit: int = 2) -> List[MediaItem]:

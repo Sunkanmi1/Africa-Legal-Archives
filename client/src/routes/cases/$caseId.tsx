@@ -40,6 +40,18 @@ function CaseView() {
             <span>{caseDetail.date}</span>
             <span>{caseDetail.court}</span>
             <span>{caseDetail.bench}</span>
+            <span>
+              {caseDetail.commonsFileUrl ? (
+                <a
+                  href={caseDetail.commonsFileUrl}
+                  download
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-md bg-primary text-center p-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                >
+                  Download PDF
+                </a>
+              ) : null} </span>
           </div>
         </header>
 
@@ -50,7 +62,7 @@ function CaseView() {
 
             {caseDetail.fullText ? (
               <>
-                <h2 className="mt-4 text-xl font-bold text-foreground">Available judgment text</h2>
+                <h2 className="mt-4 text-xl font-bold text-foreground">JUDGEMENT</h2>
                 <div className="whitespace-pre-wrap text-[15px] leading-8 text-foreground">{caseDetail.fullText}</div>
               </>
             ) : (
@@ -73,9 +85,30 @@ function CaseView() {
               </dl>
             </div>
 
-            <a href={caseDetail.articleUrl} target="_blank" rel="noreferrer" className="rounded-md border border-border px-5 py-3 text-center text-sm font-semibold text-foreground transition-colors hover:bg-accent">
-              View source record
-            </a>
+            <div className="flex flex-col gap-3">
+              {caseDetail.commonsPreviewUrl ? (
+                <div className="overflow-hidden rounded-md border border-border bg-secondary">
+                  <img
+                    src={caseDetail.commonsPreviewUrl}
+                    alt="First page of the judgment scan from Wikimedia Commons"
+                    className="h-auto w-full"
+                  />
+                </div>
+              ) : null}
+              {caseDetail.wikisourceUrl ? (
+                <a href={caseDetail.wikisourceUrl} target="_blank" rel="noreferrer" className="rounded-md bg-primary px-5 py-3 text-center text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90">
+                  Read on Wikisource
+                </a>
+              ) : null}
+              {caseDetail.commonsFileUrl ? (
+                <a href={caseDetail.commonsFileUrl} target="_blank" rel="noreferrer" className="rounded-md border border-border px-5 py-3 text-center text-sm font-semibold text-foreground transition-colors hover:bg-accent">
+                  View judgment scan on Commons
+                </a>
+              ) : null}
+              <a href={caseDetail.articleUrl} target="_blank" rel="noreferrer" className="rounded-md border border-border px-5 py-3 text-center text-sm font-semibold text-foreground transition-colors hover:bg-accent">
+                View Wikidata record
+              </a>
+            </div>
           </aside>
         </div>
       </div>

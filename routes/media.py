@@ -10,7 +10,7 @@ commons_service = CommonsService()
 @router.get("/api/media")
 async def get_media(
 	query: str = Query("", description="Optional Wikimedia Commons search term"),
-	category: str = Query("Category:1st GOIF-Effutu workshop 2023", description="Wikimedia Commons category"),
+	category: str = Query("Category:Supreme Court of Ghana building", description="Wikimedia Commons category"),
 	limit: int = Query(500, ge=1, le=500, description="Number of media items to return"),
 ):
 	items = (

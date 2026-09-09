@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { PageShell } from "@/components/site/PageShell";
-import { getJudges, JudgeProfile, MediaItem } from "@/lib/home.functions";
+import { getJudges, JudgeProfile } from "@/lib/home.functions";
 
 export const Route = createFileRoute("/judges")({
   component: JudgesPage,
@@ -15,7 +15,6 @@ export const Route = createFileRoute("/judges")({
 
 function JudgesPage() {
   const [judges, setJudges] = useState<JudgeProfile[]>([]);
-  const [media, setMedia] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

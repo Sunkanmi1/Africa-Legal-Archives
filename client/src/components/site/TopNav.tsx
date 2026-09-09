@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { FormEvent, useState } from "react";
-import africaLegalArchiveLogo from "@/assets/africa-legal-archive-logo.png";
+import africaLegalArchiveLogo from "@/assets/panla.png";
 
 const links = [
   { label: "Home", to: "/" },
@@ -26,7 +26,7 @@ export function TopNav({ searchPlaceholder = "Search statutes..." }: { searchPla
             alt="Africa Legal Archive logo"
             className="size-10 rounded-full object-cover"
           />
-          <span className="font-serif text-lg font-bold tracking-tight">Africa Legal Archive</span>
+          <span className="font-serif text-lg font-bold tracking-tight">PALA</span>
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
@@ -64,12 +64,6 @@ export function TopNav({ searchPlaceholder = "Search statutes..." }: { searchPla
               <path d="m20 20-3.5-3.5" />
             </svg>
           </form>
-          <button
-            type="button"
-            className="hidden h-9 rounded-md bg-gold-soft px-4 text-sm font-semibold text-primary transition-opacity hover:opacity-90 sm:block"
-          >
-            Contribute
-          </button>
         </div>
       </div>
     </header>

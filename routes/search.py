@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, Query
 import math
 from services.wikidata_service import WikidataService
 from services.wikisource_service import WikisourceService
+from services.popularity import case_popularity
 from models import SearchResponse
 
 
@@ -20,6 +21,7 @@ async def search_cases(
     judge: str | None = Query(None),
     court: str | None = Query(None),
     citation: str | None = Query(None),
+    court_level: str | None = Query(None, pattern="^(supreme|high)$"),
     has_full_text: bool | None = Query(None),
     data_complete: bool | None = Query(None),
 ):
@@ -57,11 +59,16 @@ async def search_cases(
             filtered_cases = [case for case in filtered_cases if court.lower() in case.court.lower()]
         if citation:
             filtered_cases = [case for case in filtered_cases if citation.lower() in case.citation.lower()]
+        if court_level:
+            filtered_cases = [case for case in filtered_cases if case.court_level == court_level]
         if data_complete is not None:
             filtered_cases = [case for case in filtered_cases if all([
                 case.case_id, case.title, case.date != "Date not recorded",
                 case.citation != "Citation not available", case.judges,
             ]) is data_complete]
+
+        if user_query and filtered_cases:
+            case_popularity.record(filtered_cases)
 
         if has_full_text is not None:
             filtered_cases = await WikisourceService().enrich_case(filtered_cases)

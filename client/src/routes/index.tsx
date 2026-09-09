@@ -124,7 +124,11 @@ function Index() {
         <section>
           <div className="flex items-end justify-between gap-4">
             <h2 className="text-2xl font-bold text-foreground">Trending Cases</h2>
-            <Link to="/search" className="text-sm font-semibold text-gold hover:underline">
+            <Link
+              to="/search"
+              search={{ q: "" }}
+              className="text-sm font-semibold text-gold hover:underline"
+            >
               Browse All →
             </Link>
           </div>
@@ -132,7 +136,7 @@ function Index() {
             {trending.map((c) => (
               <Link
                 key={c.caseId || c.title}
-                to="/search"
+                to={`/cases/${encodeURIComponent(c.caseId || "")}`}
                 search={{ q: c.caseId ? c.title : "" }}
                 className="card-surface flex flex-col gap-3 p-5 transition-shadow hover:shadow-lg"
               >

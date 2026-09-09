@@ -15,7 +15,7 @@ class Settings(BaseSettings):
 
     #External APIs
     WIKIDATA_ENDPOINT: str = "https://query.wikidata.org/sparql"
-    WIKISOURCE_API_ENDPOINT: str = "https://en.wikisource.org/w/api.php"
+    WIKISOURCE_API_ENDPOINT: str = "https://en.wikisource.org/w/api.php?action=visualeditor&mode=viewpage&page=PAGE_TITLE&format=json"
     WIKISOURCE_API: str = WIKISOURCE_API_ENDPOINT
     COMMONS_API_ENDPOINT: str = "https://commons.wikimedia.org/w/api.php"
     COMMONS_API: str = COMMONS_API_ENDPOINT

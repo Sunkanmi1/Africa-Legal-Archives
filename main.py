@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from middleware.cors import setup_cors
 from middleware.error_handler import setup_error_handlers
-from routes import health, search, countries, stats, translations, case_of_day, media, cases, quality, judges
+from routes import health, search, countries, stats, translations, case_of_day, media, cases, quality, judges, trending
 
 app = FastAPI(
     title="WikiLegal Africa API",
@@ -22,6 +22,7 @@ app.include_router(case_of_day.router)
 app.include_router(cases.router)
 app.include_router(quality.router)
 app.include_router(judges.router)
+app.include_router(trending.router)
 
 if __name__ == "__main__":
     import uvicorn 

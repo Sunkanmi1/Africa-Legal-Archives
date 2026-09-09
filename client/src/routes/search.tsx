@@ -22,6 +22,7 @@ function SearchPage() {
   const [year, setYear] = useState("");
   const [judge, setJudge] = useState("");
   const [court, setCourt] = useState("");
+  const [courtLevel, setCourtLevel] = useState<"" | "supreme" | "high">("");
   const [results, setResults] = useState<SearchCase[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -38,6 +39,7 @@ function SearchPage() {
       page_size: 20,
       judge: judge.trim() || undefined,
       court: court || undefined,
+      court_level: courtLevel || undefined,
       year: year ? Number(year) : undefined,
     };
     try {
@@ -61,7 +63,7 @@ function SearchPage() {
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (query.trim() || year || judge.trim() || court) {
+    if (query.trim() || year || judge.trim() || court || courtLevel) {
       void loadResults(1);
     } else {
       setResults([]);
@@ -94,7 +96,7 @@ function SearchPage() {
           <button type="submit" className="h-11 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground hover:opacity-90">
             Search
           </button>
-          <div className="grid gap-3 md:col-span-2 md:grid-cols-3">
+          <div className="grid gap-3 md:col-span-2 md:grid-cols-4">
             <label className="text-xs font-semibold text-muted-foreground">
               Year
               <input value={year} onChange={(event) => setYear(event.target.value)} inputMode="numeric" placeholder="Any year" className="mt-1 h-10 w-full rounded-md border border-input bg-surface px-3 text-sm font-normal text-foreground outline-none focus:border-gold" />
@@ -106,7 +108,6 @@ function SearchPage() {
             <label className="text-xs font-semibold text-muted-foreground">
               Court
               <select value={court} onChange={(event) => setCourt(event.target.value)} className="mt-1 h-10 w-full rounded-md border border-input bg-surface px-3 text-sm font-normal text-foreground outline-none focus:border-gold">
-                <option value="">Any court</option>
                 <option value="Supreme Court">Supreme Court</option>
                 <option value="High Court">High Court</option>
               </select>
@@ -146,7 +147,7 @@ function ResultCard({ result }: { result: SearchCase }) {
   return (
     <article className="card-surface p-5 transition-shadow hover:shadow-lg">
       <div className="flex flex-wrap items-center gap-3">
-        <span className="eyebrow rounded bg-mint px-2 py-0.5 text-mint-foreground">Ghana</span>
+        <span className="eyebrow rounded bg-mint px-2 py-0.5 text-mint-foreground">{result.court_level === "high" ? "High Court" : "Supreme Court"}</span>
         <span className="text-xs text-muted-foreground">{result.date}</span>
       </div>
       <h3 className="mt-3 text-lg font-bold text-foreground">{result.title}</h3>

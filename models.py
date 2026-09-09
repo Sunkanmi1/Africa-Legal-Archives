@@ -16,8 +16,11 @@ class CaseResult(BaseModel):
     judges: List[Judge]
     article_url: str
     country: Optional[str] = None
+    court_level: str = "supreme"
     # Wikisource Integration
     wikisource_url: Optional[str] = None
+    commons_file_url: Optional[str] = None
+    commons_preview_url: Optional[str] = None
     full_text: Optional[str] = None
     opinion_summary: Optional[str] = None
     source: str = "Wikidata"

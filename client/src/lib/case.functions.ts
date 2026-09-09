@@ -28,7 +28,10 @@ interface BackendCase {
   judges: { name: string; role?: string }[];
   article_url: string;
   country?: string;
+  court_level?: "supreme" | "high";
   wikisource_url?: string | null;
+  commons_file_url?: string | null;
+  commons_preview_url?: string | null;
   full_text?: string | null;
   opinion_summary?: string;
 }
@@ -135,6 +138,10 @@ export interface CaseRecord {
   court: string;
   bench: string;
   articleUrl: string;
+  courtLevel: "supreme" | "high";
+  wikisourceUrl?: string | null;
+  commonsFileUrl?: string | null;
+  commonsPreviewUrl?: string | null;
   fullText?: string | null;
   summary: { label: string; value: string }[];
 }
@@ -158,7 +165,7 @@ export const getCaseById = createServerFn({ method: "GET" })
     const judges = result.judges.map((judge) => judge.name).filter(Boolean);
 
     return {
-      badge: result.country ? `${result.country} case` : "Case record",
+      badge: result.court_level === "high" ? "High Court case" : "Supreme Court case",
       title: result.title,
       description: result.description,
       date: result.date,
@@ -166,6 +173,10 @@ export const getCaseById = createServerFn({ method: "GET" })
       court: result.court,
       bench: judges.length ? `${judges.length} Justice${judges.length === 1 ? "" : "s"}` : "Judges not listed",
       articleUrl: result.article_url,
+      courtLevel: result.court_level ?? "supreme",
+      wikisourceUrl: result.wikisource_url,
+      commonsFileUrl: result.commons_file_url,
+      commonsPreviewUrl: result.commons_preview_url,
       fullText: result.full_text,
       summary: [
         { label: "Court", value: result.court },
