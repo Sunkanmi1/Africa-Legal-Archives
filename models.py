@@ -18,6 +18,7 @@ class CaseResult(BaseModel):
     article_url: str
     country: Optional[str] = None
     court_level: str = "supreme"
+    case_type: str = "general"
     # Wikisource Integration
     wikisource_url: Optional[str] = None
     commons_file_url: Optional[str] = None

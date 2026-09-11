@@ -24,6 +24,7 @@ function SearchPage() {
   const [query, setQuery] = useState(initialQuery);
   const [year, setYear] = useState("");
   const [judge, setJudge] = useState("");
+  const [caseType, setCaseType] = useState("");
   const [courtLevel, setCourtLevel] = useState<"" | "supreme" | "high">("");
   const [results, setResults] = useState<SearchCase[]>([]);
   const [total, setTotal] = useState(0);
@@ -40,6 +41,7 @@ function SearchPage() {
       page: nextPage,
       page_size: 20,
       judge: judge.trim() || undefined,
+      case_type: caseType.trim() || undefined,
       court_level: courtLevel || undefined,
       year: year ? Number(year) : undefined,
     };
@@ -64,7 +66,7 @@ function SearchPage() {
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (query.trim() || year || judge.trim() || courtLevel) {
+    if (query.trim() || year || judge.trim() || caseType.trim() || courtLevel) {
       void loadResults(1);
     } else {
       setResults([]);
@@ -123,6 +125,26 @@ function SearchPage() {
                 placeholder="Any judge"
                 className="mt-1 h-10 w-full rounded-md border border-input bg-surface px-3 text-sm font-normal text-foreground outline-none focus:border-gold"
               />
+            </label>
+            <label className="text-xs font-semibold text-muted-foreground">
+              Case type
+              <input
+                value={caseType}
+                onChange={(event) => setCaseType(event.target.value)}
+                list="case-type-options"
+                placeholder="Criminal"
+                className="mt-1 h-10 w-full rounded-md border border-input bg-surface px-3 text-sm font-normal text-foreground outline-none focus:border-gold"
+              />
+              <datalist id="case-type-options">
+                <option value="Criminal" />
+                <option value="Constitutional" />
+                <option value="Commercial" />
+                <option value="Family" />
+                <option value="Labour" />
+                <option value="Tax" />
+                <option value="Land" />
+                <option value="General" />
+              </datalist>
             </label>
             <label className="text-xs font-semibold text-muted-foreground">
               Court
@@ -207,6 +229,9 @@ function ResultCard({ result }: { result: SearchCase }) {
       <div className="flex flex-wrap items-center gap-3">
         <span className="eyebrow rounded bg-mint px-2 py-0.5 text-mint-foreground">
           {result.court_level === "high" ? "High Court" : "Supreme Court"}
+        </span>
+        <span className="eyebrow rounded bg-gold-soft px-2 py-0.5 text-primary">
+          {result.case_type}
         </span>
         <span className="text-xs text-muted-foreground">{result.date}</span>
       </div>

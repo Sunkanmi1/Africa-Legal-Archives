@@ -85,6 +85,33 @@ def test_search_filters_by_court_level(monkeypatch):
     assert result["wikisource_url"].endswith("Example.pdf")
 
 
+def test_search_filters_by_case_type_case_insensitively(monkeypatch):
+    cases = [
+        CaseResult(
+            case_id="Q1", title="Republic v Criminal", description="Criminal appeal",
+            date="2024-01-01", citation="CR-1", court="Supreme Court of Ghana",
+            judges=[Judge(name="Ama Mensah")], article_url="https://www.wikidata.org/wiki/Q1",
+            country="Ghana", case_type="criminal",
+        ),
+        CaseResult(
+            case_id="Q2", title="Civil Appeal", description="Civil dispute",
+            date="2024-01-01", citation="CV-1", court="Supreme Court of Ghana",
+            judges=[Judge(name="Ama Mensah")], article_url="https://www.wikidata.org/wiki/Q2",
+            country="Ghana", case_type="general",
+        ),
+    ]
+
+    async def fake_fetch_cases(self, country):
+        return cases
+
+    monkeypatch.setattr(WikidataService, "fetch_cases", fake_fetch_cases)
+    response = client.get("/api/search?country=ghana&case_type=Criminal")
+
+    assert response.status_code == 200
+    assert response.json()["total_results"] == 1
+    assert response.json()["results"][0]["case_id"] == "Q1"
+
+
 def test_partial_court_fetch_is_not_cached(monkeypatch):
     service = WikidataService()
     supreme_case = CaseResult(

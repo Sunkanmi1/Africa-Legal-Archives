@@ -22,6 +22,7 @@ async def search_cases(
     court: str | None = Query(None),
     citation: str | None = Query(None),
     court_level: str | None = Query(None, pattern="^(supreme|high)$"),
+    case_type: str | None = Query(None),
     has_full_text: bool | None = Query(None),
     data_complete: bool | None = Query(None),
 ):
@@ -60,7 +61,12 @@ async def search_cases(
         if citation:
             filtered_cases = [case for case in filtered_cases if citation.lower() in case.citation.lower()]
         if court_level:
-            filtered_cases = [case for case in filtered_cases if case.court_level == court_level]
+            filtered_cases = [case for case in filtered_cases if case.court_level.casefold() == court_level.casefold()]
+        if case_type:
+            requested_case_type = case_type.strip().casefold()
+            filtered_cases = [
+                case for case in filtered_cases if case.case_type.casefold() == requested_case_type
+            ]
         if data_complete is not None:
             filtered_cases = [case for case in filtered_cases if all([
                 case.case_id, case.title, case.date != "Date not recorded",

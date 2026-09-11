@@ -51,6 +51,7 @@ export interface SearchCase {
   judges: { name: string }[];
   country?: string;
   court_level?: "supreme" | "high";
+  case_type?: string;
 }
 
 export interface SearchResponse {
@@ -70,6 +71,7 @@ export interface SearchFilters {
   court?: string;
   citation?: string;
   court_level?: "supreme" | "high";
+  case_type?: string;
   has_full_text?: boolean;
   data_complete?: boolean;
 }

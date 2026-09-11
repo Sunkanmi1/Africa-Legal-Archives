@@ -30,6 +30,23 @@ class WikidataService:
     def is_valid_country(self, country: str) -> bool:
         return country.lower() in COUNTRY_CONFIG
 
+    @staticmethod
+    def classify_case_type(title: str, description: str, citation: str) -> str:
+        text = f"{title} {description} {citation}".casefold()
+        categories = (
+            ("criminal", ("criminal", "murder", "manslaughter", "robbery", "rape", "drug")),
+            ("constitutional", ("constitutional", "constitution", "fundamental rights")),
+            ("commercial", ("commercial", "company", "shareholder", "contract", "bank")),
+            ("family", ("divorce", "custody", "matrimonial", "adoption", "maintenance")),
+            ("labour", ("labour", "labor", "employment", "dismissal", "employee")),
+            ("tax", ("tax", "revenue", "customs", "vat")),
+            ("land", ("land", "property", "title to land", "eviction")),
+        )
+        for case_type, keywords in categories:
+            if any(keyword in text for keyword in keywords):
+                return case_type
+        return "general"
+
     def get_countries(self) -> List[Dict]:
         return [
             {
@@ -237,17 +254,22 @@ class WikidataService:
                 if court_level == "high" and file_name.lower().endswith(".pdf") else None
             )
 
+            title = binding.get("itemLabel", {}).get("value", "No title available")
+            description = binding.get("itemDescription", {}).get("value", "No description available")
+            citation = binding.get("legal_citation", {}).get("value", "Citation not available")
+
             return CaseResult(
                 case_id=case_id,
-                title=binding.get("itemLabel", {}).get("value", "No title available"),
-                description=binding.get("itemDescription", {}).get("value", "No description available"),
+                title=title,
+                description=description,
                 date=formatted_date,
-                citation=binding.get("legal_citation", {}).get("value", "Citation not available"),
+                citation=citation,
                 court=binding.get("courtLabel", {}).get("value", "Court not specified"),
                 judges=judges_list if judges_list else [Judge(name="Judges unavailable")],
                 article_url=binding.get("item", {}).get("value", ""),
                 country=country.capitalize().replace("_", " "),
                 court_level=court_level,
+                case_type=self.classify_case_type(title, description, citation),
                 wikisource_url=wikisource_index_url,
                 commons_file_url=commons_file_url,
                 source="Wikidata"
