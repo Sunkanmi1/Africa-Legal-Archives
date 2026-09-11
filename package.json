@@ -1,0 +1,7 @@
+{
+  "name": "pan-african-legal-archives",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix client ci --ignore-scripts && npm --prefix client run build"
+  }
+}
