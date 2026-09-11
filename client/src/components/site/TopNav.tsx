@@ -8,7 +8,11 @@ const links = [
   { label: "Judges", to: "/judges" },
 ] as const;
 
-export function TopNav({ searchPlaceholder = "Search statutes..." }: { searchPlaceholder?: string | undefined }) {
+export function TopNav({
+  searchPlaceholder = "Search statutes...",
+}: {
+  searchPlaceholder?: string | undefined;
+}) {
   const [query, setQuery] = useState("");
 
   function submitSearch(event: FormEvent<HTMLFormElement>) {

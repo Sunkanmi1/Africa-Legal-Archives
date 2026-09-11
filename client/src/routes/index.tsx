@@ -25,7 +25,9 @@ const homeStatsQuery = queryOptions({
 function formatLastUpdate(value: string) {
   if (value === "Unavailable") return value;
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+  return Number.isNaN(date.getTime())
+    ? value
+    : date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
 }
 
 export const Route = createFileRoute("/")({
@@ -79,7 +81,9 @@ function Index() {
               />
             ) : null}
             <div className="relative flex flex-col gap-5 p-8 lg:p-10">
-              <span className="eyebrow w-fit rounded-md bg-gold-soft px-3 py-1 text-primary">Case of the Day</span>
+              <span className="eyebrow w-fit rounded-md bg-gold-soft px-3 py-1 text-primary">
+                Case of the Day
+              </span>
               <h1 className="max-w-xl text-3xl font-bold leading-tight lg:text-[2.75rem]">
                 {caseOfTheDay.title}
               </h1>
@@ -141,7 +145,9 @@ function Index() {
                 className="card-surface flex flex-col gap-3 p-5 transition-shadow hover:shadow-lg"
               >
                 <div className="flex items-center gap-2">
-                  <span className="eyebrow rounded bg-mint px-2 py-0.5 text-mint-foreground">{c.country}</span>
+                  <span className="eyebrow rounded bg-mint px-2 py-0.5 text-mint-foreground">
+                    {c.country}
+                  </span>
                   <span className="text-xs text-muted-foreground">{c.year}</span>
                 </div>
                 <h3 className="text-base font-bold leading-snug text-foreground">{c.title}</h3>
@@ -151,7 +157,6 @@ function Index() {
             ))}
           </div>
         </section>
-
       </div>
     </PageShell>
   );

@@ -36,7 +36,7 @@ interface BackendCase {
   opinion_summary?: string;
 }
 
-interface SearchCase extends BackendCase {}
+type SearchCase = BackendCase;
 
 interface SearchResponse {
   results: SearchCase[];
@@ -63,7 +63,10 @@ const fallbackCase: CaseDetail = {
   citation: "[2008] 5 NWLR (Pt. 1080) 227",
   summary: [
     { label: "Jurisdiction", value: "Supreme Court of Nigeria" },
-    { label: "Bench", value: "Katsina-Alu, Oguntade, Mukhtar, Musdapher, Onnoghen, Coomassie, Adekeye" },
+    {
+      label: "Bench",
+      value: "Katsina-Alu, Oguntade, Mukhtar, Musdapher, Onnoghen, Coomassie, Adekeye",
+    },
     { label: "Counsel for Appellant", value: "L.O. Fagbemi, SAN" },
     { label: "Wikidata ID", value: "Q1056294" },
   ],
@@ -96,7 +99,9 @@ async function fetchBackend<T>(path: string): Promise<T | null> {
 export const getCaseBySlug = createServerFn({ method: "GET" })
   .validator((data: { slug: string }) => data)
   .handler(async ({ data }): Promise<CaseDetail> => {
-    const directResult = await fetchBackend<BackendCase>(`/api/cases/${encodeURIComponent(data.slug)}`);
+    const directResult = await fetchBackend<BackendCase>(
+      `/api/cases/${encodeURIComponent(data.slug)}`,
+    );
     if (directResult) return toCaseDetail(directResult, data.slug);
 
     const response = await fetchBackend<SearchResponse>(
@@ -118,12 +123,17 @@ function toCaseDetail(result: BackendCase, slug: string): CaseDetail {
     court: result.court,
     citation: result.citation,
     bench: `${result.judges.length} Justices`,
-    leadJudgmentBy: result.judges[0]?.name ? `Lead judgment by ${result.judges[0].name}.` : fallbackCase.leadJudgmentBy,
+    leadJudgmentBy: result.judges[0]?.name
+      ? `Lead judgment by ${result.judges[0].name}.`
+      : fallbackCase.leadJudgmentBy,
     paragraphs: [summary],
     summary: [
       { label: "Court", value: result.court },
       { label: "Citation", value: result.citation },
-      { label: "Judges", value: result.judges.map((judge) => judge.name).join(", ") || "Not listed" },
+      {
+        label: "Judges",
+        value: result.judges.map((judge) => judge.name).join(", ") || "Not listed",
+      },
       { label: "Source ID", value: result.case_id },
     ],
   };
@@ -150,10 +160,13 @@ async function fetchCaseRecord(caseId: string): Promise<BackendCase> {
   const baseUrl = process.env["BACKEND_API_URL"] ?? import.meta.env["VITE_API_BASE_URL"];
   if (!baseUrl) throw new Error("The backend API URL is not configured.");
 
-  const response = await fetch(`${baseUrl.replace(/\/$/, "")}/api/cases/${encodeURIComponent(caseId)}`, {
-    headers: { Accept: "application/json" },
-    signal: AbortSignal.timeout(15000),
-  });
+  const response = await fetch(
+    `${baseUrl.replace(/\/$/, "")}/api/cases/${encodeURIComponent(caseId)}`,
+    {
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(15000),
+    },
+  );
   if (!response.ok) throw new Error("Case not found.");
   return (await response.json()) as BackendCase;
 }
@@ -171,7 +184,9 @@ export const getCaseById = createServerFn({ method: "GET" })
       date: result.date,
       citation: result.citation,
       court: result.court,
-      bench: judges.length ? `${judges.length} Justice${judges.length === 1 ? "" : "s"}` : "Judges not listed",
+      bench: judges.length
+        ? `${judges.length} Justice${judges.length === 1 ? "" : "s"}`
+        : "Judges not listed",
       articleUrl: result.article_url,
       courtLevel: result.court_level ?? "supreme",
       wikisourceUrl: result.wikisource_url,

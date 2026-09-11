@@ -85,6 +85,40 @@ def test_search_filters_by_court_level(monkeypatch):
     assert result["wikisource_url"].endswith("Example.pdf")
 
 
+def test_partial_court_fetch_is_not_cached(monkeypatch):
+    service = WikidataService()
+    supreme_case = CaseResult(
+        case_id="Q1", title="Supreme Case", description="Supreme", date="2024-01-01",
+        citation="SC-1", court="Supreme Court of Ghana", judges=[Judge(name="Judge 1")],
+        article_url="https://www.wikidata.org/wiki/Q1", country="Ghana", court_level="supreme",
+    )
+    high_case = CaseResult(
+        case_id="Q2", title="High Case", description="High", date="2023-01-01",
+        citation="HC-1", court="High Court of Ghana", judges=[Judge(name="Judge 2")],
+        article_url="https://www.wikidata.org/wiki/Q2", country="Ghana", court_level="high",
+    )
+    attempts = {"supreme": 0}
+
+    async def fake_supreme(country):
+        attempts["supreme"] += 1
+        if attempts["supreme"] == 1:
+            raise RuntimeError("temporary Wikidata failure")
+        return [supreme_case]
+
+    async def fake_high(country):
+        return [high_case]
+
+    monkeypatch.setattr(service, "fetch_supreme_court_cases", fake_supreme)
+    monkeypatch.setattr(service, "fetch_high_court_cases", fake_high)
+
+    first = asyncio.run(service.fetch_cases("ghana"))
+    second = asyncio.run(service.fetch_cases("ghana"))
+
+    assert [case.case_id for case in first] == ["Q2"]
+    assert {case.case_id for case in second} == {"Q1", "Q2"}
+    assert attempts["supreme"] == 2
+
+
 def test_wikisource_query_ignores_placeholder_citation(monkeypatch):
     observed = {}
 

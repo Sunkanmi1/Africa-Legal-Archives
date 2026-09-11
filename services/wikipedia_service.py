@@ -9,6 +9,40 @@ class WikipediaService:
     endpoint = "https://en.wikipedia.org/w/api.php"
     headers = {"User-Agent": "WikiLegalAfrica/1.0 (https://github.com/WikiLegalAfrica)"}
 
+    async def find_article_by_qid(self, wikidata_id: str) -> dict[str, str | None]:
+        cache_key = ("wikipedia-judge-qid", wikidata_id)
+        cached = get_cached(cache_key)
+        if cached is not None:
+            return cached
+
+        async def request():
+            async with httpx.AsyncClient(timeout=settings.WIKIDATA_TIMEOUT) as client:
+                response = await client.get(
+                    "https://www.wikidata.org/w/api.php",
+                    params={
+                        "action": "wbgetentities",
+                        "ids": wikidata_id,
+                        "props": "sitelinks",
+                        "sitefilter": "enwiki",
+                        "format": "json",
+                    },
+                    headers=self.headers,
+                )
+                response.raise_for_status()
+                return response.json()
+
+        try:
+            data = await with_retries(request)
+            entity = data.get("entities", {}).get(wikidata_id, {})
+            title = entity.get("sitelinks", {}).get("enwiki", {}).get("title")
+            value = {
+                "title": title,
+                "url": f"https://en.wikipedia.org/wiki/{title.replace(' ', '_')}" if title else None,
+            }
+            return set_cached(cache_key, value)
+        except Exception:
+            return {"title": None, "url": None}
+
     async def find_article(self, name: str) -> dict[str, str | None]:
         cache_key = ("wikipedia-judge", name)
         cached = get_cached(cache_key)
@@ -44,9 +78,15 @@ class WikipediaService:
         except Exception:
             return {"title": None, "url": None}
 
-    async def enrich_judges(self, names: list[str]) -> list[dict]:
-        results = await asyncio.gather(*(self.find_article(name) for name in names))
+    async def enrich_judges(self, judges: list[dict[str, str | None]]) -> list[dict]:
+        results = await asyncio.gather(
+            *(self.find_article_by_qid(judge["wikidata_id"]) for judge in judges)
+        )
         return [
-            {"name": name, "wikipedia_title": article["title"], "wikipedia_url": article["url"]}
-            for name, article in zip(names, results)
+            {
+                "name": judge["name"],
+                "wikipedia_title": article["title"],
+                "wikipedia_url": article["url"],
+            }
+            for judge, article in zip(judges, results)
         ]

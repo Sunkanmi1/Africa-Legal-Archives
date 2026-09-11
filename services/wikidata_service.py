@@ -53,7 +53,7 @@ class WikidataService:
 
         sparql_query = f"""
             SELECT DISTINCT ?item ?itemLabel ?itemDescription ?date ?legal_citation ?courtLabel ?sourceLabel 
-            (GROUP_CONCAT(DISTINCT ?judge; separator=", ") AS ?judges) 
+            (GROUP_CONCAT(DISTINCT CONCAT(STR(?judge_item), "|", ?judge); separator="||") AS ?judge_data)
             WHERE {{
                 {{
                     SELECT DISTINCT ?item ?court WHERE {{
@@ -69,7 +69,7 @@ class WikidataService:
                 OPTIONAL {{ ?item wdt:P1031 ?legal_citation. }}
                 OPTIONAL {{ ?item wdt:P1433 ?source. }}
                 
-                OPTIONAL {{ 
+                OPTIONAL {{
                     ?item wdt:P1594 ?judge_item. 
                     ?judge_item rdfs:label ?judge. 
                     FILTER(LANG(?judge) = "en") 
@@ -123,8 +123,10 @@ class WikidataService:
             return_exceptions=True,
         )
         cases_by_id: Dict[str, CaseResult] = {}
+        had_fetch_error = False
         for result in results:
             if isinstance(result, Exception):
+                had_fetch_error = True
                 logger.warning("A Ghana court collection could not be loaded: %s", result)
                 continue
             for case in result:
@@ -135,7 +137,7 @@ class WikidataService:
 
         cases = sorted(cases_by_id.values(), key=lambda case: case.date, reverse=True)
         logger.info("Fetched %s Ghana cases across both court collections", len(cases))
-        return set_cached(cache_key, cases)
+        return cases if had_fetch_error else set_cached(cache_key, cases)
 
     async def fetch_high_court_cases(self, country: str) -> List[CaseResult]:
         """Dedicated High Court query; it does not alter the Supreme Court query."""
@@ -151,7 +153,7 @@ class WikidataService:
 
         sparql_query = f"""
             SELECT DISTINCT ?item ?itemLabel ?itemDescription ?date ?legal_citation ?courtLabel ?sourceLabel ?commons_file
-            (GROUP_CONCAT(DISTINCT ?judge; separator=", ") AS ?judges)
+            (GROUP_CONCAT(DISTINCT CONCAT(STR(?judge_item), "|", ?judge); separator="||") AS ?judge_data)
             WHERE {{
                 {{
                     SELECT DISTINCT ?item ?court WHERE {{
@@ -205,13 +207,16 @@ class WikidataService:
             case_id = binding.get("item", {}).get("value", "").split("/")[-1] or "unknown"
             
             # Extract and parse judges string
-            judges_str = binding.get("judges", {}).get("value", "")
+            judge_data = binding.get("judge_data", {}).get("value", "")
             judges_list = []
-            if judges_str:
+            if judge_data:
                 judges_list = [
-                    Judge(name=name.strip()) 
-                    for name in judges_str.split(",") 
-                    if name.strip()
+                    Judge(
+                        name=parts[1].strip(),
+                        wikidata_id=parts[0].rsplit("/", 1)[-1],
+                    )
+                    for entry in judge_data.split("||")
+                    if (parts := entry.split("|", 1)) and len(parts) == 2 and parts[1].strip()
                 ]
             
             # Safe date extraction

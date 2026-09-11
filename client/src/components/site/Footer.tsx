@@ -17,12 +17,12 @@ export function Footer() {
           </div>
 
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-primary-foreground/70">
-            A collaborative platform for the preservation and accessibility of African legal knowledge.
-            Operated as a community-driven repository under Creative Commons.
+            A collaborative platform for the preservation and accessibility of African legal
+            knowledge. Operated as a community-driven repository under Creative Commons.
           </p>
 
           <p className="mt-4 text-xs text-primary-foreground/50">
-            © 2024 WikiLegal Africa. Knowledge is the foundation of justice.
+            © 2024 Pan-African Legal Archive. Knowledge is the foundation of justice.
           </p>
         </div>
 
@@ -44,12 +44,14 @@ export function Footer() {
 
         <div>
           <Link to="https://globalopeninitiative.org/">
-           <img
+            <img
               src={Goif_Logo}
               alt="GLOBAL OPEN INITIATIVE FOUNDATION logo"
               className="h-15 w-30"
             />
-          <p className="eyebrow text-sm text-primary-foreground/70">project by GLOBAL OPEN INNITIATIVE FOUNDATION</p>
+            <p className="eyebrow text-sm text-primary-foreground/70">
+              project by GLOBAL OPEN INNITIATIVE FOUNDATION
+            </p>
           </Link>
         </div>
       </div>

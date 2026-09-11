@@ -11,11 +11,15 @@ const caseDetailQuery = (caseId: string) =>
   });
 
 export const Route = createFileRoute("/cases/$caseId")({
-  loader: ({ context, params }) => context.queryClient.ensureQueryData(caseDetailQuery(params.caseId)),
+  loader: ({ context, params }) =>
+    context.queryClient.ensureQueryData(caseDetailQuery(params.caseId)),
   head: () => ({
     meta: [
       { title: "Ghana Supreme Court Case — Case Record" },
-      { name: "description", content: "Read a Ghana Supreme Court case record and its available metadata." },
+      {
+        name: "description",
+        content: "Read a Ghana Supreme Court case record and its available metadata.",
+      },
     ],
   }),
   component: CaseView,
@@ -30,8 +34,12 @@ function CaseView() {
       <div className="flex flex-col gap-10 px-5 py-10 lg:px-10">
         <header className="flex flex-col gap-4 border-b border-border pb-8">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="eyebrow rounded bg-gold-soft px-3 py-1 text-primary">{caseDetail.badge}</span>
-            <span className="text-xs font-semibold text-muted-foreground">{caseDetail.citation}</span>
+            <span className="eyebrow rounded bg-gold-soft px-3 py-1 text-primary">
+              {caseDetail.badge}
+            </span>
+            <span className="text-xs font-semibold text-muted-foreground">
+              {caseDetail.citation}
+            </span>
           </div>
           <h1 className="max-w-3xl text-3xl font-bold leading-tight text-foreground lg:text-[2.5rem]">
             {caseDetail.title}
@@ -51,7 +59,8 @@ function CaseView() {
                 >
                   Download PDF
                 </a>
-              ) : null} </span>
+              ) : null}{" "}
+            </span>
           </div>
         </header>
 
@@ -63,11 +72,14 @@ function CaseView() {
             {caseDetail.fullText ? (
               <>
                 <h2 className="mt-4 text-xl font-bold text-foreground">JUDGEMENT</h2>
-                <div className="whitespace-pre-wrap text-[15px] leading-8 text-foreground">{caseDetail.fullText}</div>
+                <div className="whitespace-pre-wrap text-[15px] leading-8 text-foreground">
+                  {caseDetail.fullText}
+                </div>
               </>
             ) : (
               <p className="rounded-md bg-secondary p-5 text-sm leading-relaxed text-muted-foreground">
-                The full judgment text is not yet available for this case. The record above is sourced from Wikidata.
+                The full judgment text is not yet available for this case. The record above is
+                sourced from Wikidata.
               </p>
             )}
           </article>
@@ -79,7 +91,9 @@ function CaseView() {
                 {caseDetail.summary.map((item) => (
                   <div key={item.label} className="py-3">
                     <dt className="text-xs text-muted-foreground">{item.label}</dt>
-                    <dd className="mt-1 text-sm font-semibold leading-relaxed text-foreground">{item.value}</dd>
+                    <dd className="mt-1 text-sm font-semibold leading-relaxed text-foreground">
+                      {item.value}
+                    </dd>
                   </div>
                 ))}
               </dl>
@@ -96,16 +110,31 @@ function CaseView() {
                 </div>
               ) : null}
               {caseDetail.wikisourceUrl ? (
-                <a href={caseDetail.wikisourceUrl} target="_blank" rel="noreferrer" className="rounded-md bg-primary px-5 py-3 text-center text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90">
+                <a
+                  href={caseDetail.wikisourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-md bg-primary px-5 py-3 text-center text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                >
                   Read on Wikisource
                 </a>
               ) : null}
               {caseDetail.commonsFileUrl ? (
-                <a href={caseDetail.commonsFileUrl} target="_blank" rel="noreferrer" className="rounded-md border border-border px-5 py-3 text-center text-sm font-semibold text-foreground transition-colors hover:bg-accent">
+                <a
+                  href={caseDetail.commonsFileUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-md border border-border px-5 py-3 text-center text-sm font-semibold text-foreground transition-colors hover:bg-accent"
+                >
                   View judgment scan on Commons
                 </a>
               ) : null}
-              <a href={caseDetail.articleUrl} target="_blank" rel="noreferrer" className="rounded-md border border-border px-5 py-3 text-center text-sm font-semibold text-foreground transition-colors hover:bg-accent">
+              <a
+                href={caseDetail.articleUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-md border border-border px-5 py-3 text-center text-sm font-semibold text-foreground transition-colors hover:bg-accent"
+              >
                 View Wikidata record
               </a>
             </div>

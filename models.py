@@ -4,6 +4,7 @@ from typing import Optional, List
 class Judge(BaseModel):
     name: str
     role: Optional[str] = None
+    wikidata_id: Optional[str] = None
 
 
 class CaseResult(BaseModel):

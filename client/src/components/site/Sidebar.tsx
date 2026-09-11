@@ -1,8 +1,16 @@
 import { Link } from "@tanstack/react-router";
 
 const categories = [
-  { label: "Home", to: "/" as const, icon: "M3 11 12 4l9 7v8a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" },
-  { label: "Judges", to: "/judges" as const, icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8m-7 9a7 7 0 0 1 14 0" },
+  {
+    label: "Home",
+    to: "/" as const,
+    icon: "M3 11 12 4l9 7v8a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
+  },
+  {
+    label: "Judges",
+    to: "/judges" as const,
+    icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8m-7 9a7 7 0 0 1 14 0",
+  },
 ];
 
 export function Sidebar() {
@@ -21,7 +29,14 @@ export function Sidebar() {
               to={c.to}
               className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground [&.active]:bg-accent [&.active]:font-semibold [&.active]:text-foreground"
             >
-              <svg aria-hidden viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.6">
+              <svg
+                aria-hidden
+                viewBox="0 0 24 24"
+                className="size-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+              >
                 <path d={c.icon} />
               </svg>
               {c.label}
