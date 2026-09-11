@@ -14,4 +14,4 @@ trap cleanup EXIT INT TERM
 
 export BACKEND_API_URL="${BACKEND_API_URL:-http://127.0.0.1:${BACKEND_PORT}}"
 export HOST="${HOST:-0.0.0.0}"
-exec node client/dist/server/server.js
+exec npm --prefix client run preview -- --host "$HOST" --port "${PORT:?PORT must be set by Toolforge}"
