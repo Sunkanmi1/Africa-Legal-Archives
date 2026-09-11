@@ -82,7 +82,8 @@ const fallbackCase: CaseDetail = {
 };
 
 async function fetchBackend<T>(path: string): Promise<T | null> {
-  const baseUrl = process.env["BACKEND_API_URL"] ?? import.meta.env["VITE_API_BASE_URL"];
+  const baseUrl =
+    process.env["BACKEND_API_URL"] ?? import.meta.env["VITE_API_BASE_URL"] ?? "/";
   if (!baseUrl) return null;
   try {
     const res = await fetch(`${baseUrl.replace(/\/$/, "")}${path}`, {
@@ -157,8 +158,8 @@ export interface CaseRecord {
 }
 
 async function fetchCaseRecord(caseId: string): Promise<BackendCase> {
-  const baseUrl = process.env["BACKEND_API_URL"] ?? import.meta.env["VITE_API_BASE_URL"];
-  if (!baseUrl) throw new Error("The backend API URL is not configured.");
+  const baseUrl =
+    process.env["BACKEND_API_URL"] ?? import.meta.env["VITE_API_BASE_URL"] ?? "/";
 
   const response = await fetch(
     `${baseUrl.replace(/\/$/, "")}/api/cases/${encodeURIComponent(caseId)}`,

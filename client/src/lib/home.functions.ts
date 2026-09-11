@@ -136,7 +136,8 @@ const fallbackTrending: TrendingCase[] = [
 ];
 
 async function fetchBackend<T>(path: string): Promise<T | null> {
-  const baseUrl = process.env["BACKEND_API_URL"] ?? import.meta.env["VITE_API_BASE_URL"];
+  const baseUrl =
+    process.env["BACKEND_API_URL"] ?? import.meta.env["VITE_API_BASE_URL"] ?? "/";
   if (!baseUrl) return null;
   try {
     const res = await fetch(`${baseUrl.replace(/\/$/, "")}${path}`, {
